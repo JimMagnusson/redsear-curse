@@ -33,6 +33,10 @@ public class PlayerHazardHandler : MonoBehaviour
                         yield return new WaitForSeconds(combustionAnimTime);
                         timeController.StartRewind();
                     }
+                    else
+                    {
+                        // Play small flames anim
+                    }
                     break;
             }
 

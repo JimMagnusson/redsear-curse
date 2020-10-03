@@ -6,21 +6,21 @@ public class TimeController : MonoBehaviour
 {
     [SerializeField] float timeScale = 1f;
     [SerializeField] float rewindTimeScale = 2f;
-    [SerializeField] [Tooltip("In seconds")] float rewindTriggerTime = 60;
+    [SerializeField] [Tooltip("In seconds")] float rewindTriggerTime = 60;          // TODO: write one for every hazard
     PlayerHazardHandler playerHazardHandler;
     float timeSinceLastLoop = 0f;
     float decreasingTime = 0f;
 
     int roundedTime;
     bool isRewinding = false;
-    TimerUI timer;
+    TimerUI timerUI;
     TimeBody[] timeBodies;
 
     // Start is called before the first frame update
     void Start()
     {
         playerHazardHandler = FindObjectOfType<PlayerHazardHandler>();
-        timer = FindObjectOfType<TimerUI>();
+        timerUI = FindObjectOfType<TimerUI>();
         timeBodies = FindObjectsOfType<TimeBody>();
     }
 
@@ -38,7 +38,7 @@ public class TimeController : MonoBehaviour
             roundedTime = (int)decreasingTime;
             // TODO: change timeScale exponentially
         }
-        timer.UpdateTimerText(roundedTime);
+        timerUI.UpdateTimerText(roundedTime);
         if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime)
         {
             StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
@@ -72,6 +72,7 @@ public class TimeController : MonoBehaviour
         {
             timeBody.StartRewindTimeBody();
         }
+        timerUI.toggleRewindIcon(true);
     }
 
     public void StopRewind()
@@ -83,6 +84,7 @@ public class TimeController : MonoBehaviour
             timeBody.StopRewindTimeBody();
         }
         timeSinceLastLoop = 0f;
+        timerUI.toggleRewindIcon(false);
     }
 
 
