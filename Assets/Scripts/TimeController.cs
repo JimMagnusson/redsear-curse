@@ -6,41 +6,45 @@ public class TimeController : MonoBehaviour
 {
     [SerializeField] float timeScale = 1f;
     [SerializeField] float rewindTimeScale = 2f;
-    [SerializeField] [Tooltip("In minutes")] int rewindTriggerTime = 2;
+    [SerializeField] [Tooltip("In seconds")] float rewindTriggerTime = 60;
+    PlayerHazardHandler playerHazardHandler;
     float timeSinceLastLoop = 0f;
+    float decreasingTime = 0f;
+
     int roundedTime;
     bool isRewinding = false;
-    Timer timer;
+    TimerUI timer;
     TimeBody[] timeBodies;
 
     // Start is called before the first frame update
     void Start()
     {
-        timer = FindObjectOfType<Timer>();
+        playerHazardHandler = FindObjectOfType<PlayerHazardHandler>();
+        timer = FindObjectOfType<TimerUI>();
         timeBodies = FindObjectsOfType<TimeBody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        roundedTime = (int)timeSinceLastLoop;
         if (!isRewinding)
         {
             timeSinceLastLoop += Time.deltaTime;
+            roundedTime = (int)timeSinceLastLoop;
         }
         else
         {
-            timeSinceLastLoop -= Time.deltaTime;
-                                                     // TODO: change timeScale exponentially
+            decreasingTime -= Time.deltaTime;
+            roundedTime = (int)decreasingTime;
+            // TODO: change timeScale exponentially
         }
-
         timer.UpdateTimerText(roundedTime);
-
-        if(roundedTime/60 == rewindTriggerTime)
+        if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime)
         {
-            StartRewind();
+            StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
+            //StartRewind();
         }
-        else if(roundedTime <= 0)
+        else if(decreasingTime < 0)
         {
             StopRewind();
         }
@@ -62,6 +66,7 @@ public class TimeController : MonoBehaviour
     public void StartRewind()
     {
         isRewinding = true;
+        decreasingTime = timeSinceLastLoop;
         Time.timeScale = rewindTimeScale;  
         foreach (TimeBody timeBody in timeBodies)
         {
@@ -77,6 +82,7 @@ public class TimeController : MonoBehaviour
         {
             timeBody.StopRewindTimeBody();
         }
+        timeSinceLastLoop = 0f;
     }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Timer : MonoBehaviour
+public class TimerUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI textGUI;
 
@@ -15,7 +15,6 @@ public class Timer : MonoBehaviour
 
     public void UpdateTimerText(int roundedTime)
     {
-        //int roundedTime = (int)timeSinceLastLoop;
         textGUI.SetText("" + (roundedTime / (60 * 10)) % 6 + (roundedTime/60) % 10 + ":" + (roundedTime/10) % 6 + roundedTime % 10);
     }
 
