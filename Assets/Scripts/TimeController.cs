@@ -52,7 +52,6 @@ public class TimeController : MonoBehaviour
         {
             isSendingCoroutine = true;
             StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
-            //StartRewind();
         }
 
         HandleDebugMode();
@@ -74,9 +73,7 @@ public class TimeController : MonoBehaviour
         isSendingCoroutine = false;
         isRewinding = true;
         decreasingTime = timeSinceLastLoop;
-        timerUI.toggleRewindIcon(true);
-
-        //Time.timeScale = rewindTimeScale
+        ToggleRewindUI(true);
 
         foreach (TimeBody timeBody in timeBodies)
         {
@@ -93,13 +90,19 @@ public class TimeController : MonoBehaviour
             timeBody.StopRewindTimeBody();
         }
         timeSinceLastLoop = 0f;
-        timerUI.toggleRewindIcon(false);
+        ToggleRewindUI(false);
         playerMovement.SetCanMove(true);
     }
 
     public bool IsRewinding()
     {
         return isRewinding;
+    }
+
+    private void ToggleRewindUI(bool isActive)
+    {
+        timerUI.toggleRewindIcon(isActive);
+        timerUI.toggleRewindEffect(isActive);
     }
 
 }

@@ -7,7 +7,6 @@ public class PlayerHazardHandler : MonoBehaviour
     [SerializeField] float combustionAnimTime = 1f;
     private Animator animator;
     private TimeController timeController;
-     //private bool isHandlingHazard = false;
     private PlayerState playerState;
     private PlayerMovement playerMovement;
 
@@ -20,31 +19,24 @@ public class PlayerHazardHandler : MonoBehaviour
     }
     public IEnumerator HandleHazard(Hazard hazard)
     {
-        //if(!isHandlingHazard)
-        //{
-            Debug.Log("HandlingHazard");
-            //isHandlingHazard = true;
-            playerState = GetComponent<Player>().GetPlayerState();
-            playerMovement.SetCanMove(false);
-            switch (hazard)
-            {
-                case Hazard.combustion:
-                    if(playerState != PlayerState.wet)
-                    {
-                        animator.SetTrigger("Combustion");
-                        yield return new WaitForSeconds(combustionAnimTime);
-                        timeController.StartRewind();
-                        animator.SetTrigger("ReverseCombustion");
-                    }
-                    else
-                    {
-                        animator.SetTrigger("DrownedCombustion");
-                        Debug.Log("player no get combustion");
-                        playerMovement.SetCanMove(true);
-                    }
-                    break;
-            }
-            //isHandlingHazard = false;
-        //}
+        playerState = GetComponent<Player>().GetPlayerState();
+        playerMovement.SetCanMove(false);
+        switch (hazard)
+        {
+            case Hazard.combustion:
+                if(playerState != PlayerState.wet)
+                {
+                    animator.SetTrigger("Combustion");
+                    yield return new WaitForSeconds(combustionAnimTime);
+                    timeController.StartRewind();
+                    animator.SetTrigger("ReverseCombustion");
+                }
+                else
+                {
+                    animator.SetTrigger("DrownedCombustion");
+                    playerMovement.SetCanMove(true);
+                }
+                break;
+        }
     }
 }

@@ -8,6 +8,7 @@ public class TimerUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI textGUI;
     [SerializeField] GameObject rewindIcon;
+    [SerializeField] GameObject rewindEffect;
 
     private void Start()
     {
@@ -22,6 +23,11 @@ public class TimerUI : MonoBehaviour
     public void toggleRewindIcon(bool isActive)
     {
         rewindIcon.SetActive(isActive);
+    }
+
+    public void toggleRewindEffect(bool isActive)
+    {
+        rewindEffect.SetActive(isActive);
     }
 
 }
