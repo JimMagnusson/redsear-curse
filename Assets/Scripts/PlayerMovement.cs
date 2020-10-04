@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     bool facingLeft = true;
     Vector3 lastPosition;
     Animator animator;
+    TimeController timeController;
 
     [SerializeField] GameObject body;
     [SerializeField] float walkingSpeed = 5f;
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         lastPosition = transform.position;
         animator = GetComponentInChildren<Animator>();
+        timeController = FindObjectOfType<TimeController>();
     }
 
     // Update is called once per frame
@@ -42,16 +44,21 @@ public class PlayerMovement : MonoBehaviour
     {
         float changeInXPos = lastPosition.x - transform.position.x;
         float changeInYPos = lastPosition.y - transform.position.y;
+        bool isRewinding = timeController.IsRewinding();
 
         if (Mathf.Abs(changeInXPos) >= Mathf.Epsilon) 
         {
-            animator.SetBool("PlayerRunning", true);
-            if(changeInXPos < 0 && facingLeft) // Moving right
+            bool isMovingRightAndForward = changeInXPos < 0 && facingLeft && !isRewinding;
+            bool isMovingLeftAndRewinding = changeInXPos > 0 && facingLeft && isRewinding;
+            bool isMovingLeftAndForward = changeInXPos > 0 && !facingLeft && !isRewinding;
+            bool isMovingRightAndRewinding = changeInXPos < 0 && !facingLeft && isRewinding;
+
+            if (isMovingRightAndForward || isMovingLeftAndRewinding)
             {
                 FlipSprite();
                 facingLeft = false;
             }
-            else if(changeInXPos > 0 && !facingLeft)
+            else if (isMovingLeftAndForward || isMovingRightAndRewinding)
             {
                 FlipSprite();
                 facingLeft = true;

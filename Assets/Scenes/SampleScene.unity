@@ -124811,7 +124811,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeScale: 1
   rewindTimeScale: 2
-  rewindTriggerTime: 60
+  rewindTriggerTime: 10
 --- !u!4 &797822941
 Transform:
   m_ObjectHideFlags: 0

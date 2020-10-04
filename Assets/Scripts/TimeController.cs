@@ -16,7 +16,6 @@ public class TimeController : MonoBehaviour
     TimerUI timerUI;
     TimeBody[] timeBodies;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerHazardHandler = FindObjectOfType<PlayerHazardHandler>();
@@ -24,10 +23,9 @@ public class TimeController : MonoBehaviour
         timeBodies = FindObjectsOfType<TimeBody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!isRewinding)
+        if (!isRewinding)                                           // TODO: bug, clock not counting after rewind. Might be due to no anim
         {
             timeSinceLastLoop += Time.deltaTime;
             roundedTime = (int)timeSinceLastLoop;
@@ -87,5 +85,9 @@ public class TimeController : MonoBehaviour
         timerUI.toggleRewindIcon(false);
     }
 
+    public bool IsRewinding()
+    {
+        return isRewinding;
+    }
 
 }
