@@ -17,6 +17,8 @@ public class TimeController : MonoBehaviour
     TimeBody[] timeBodies;
     PlayerMovement playerMovement;
 
+    bool isSendingCoroutine = false;
+
     void Start()
     {
         playerHazardHandler = FindObjectOfType<PlayerHazardHandler>();
@@ -36,17 +38,19 @@ public class TimeController : MonoBehaviour
         {
             decreasingTime -= Time.deltaTime;
             roundedTime = (int)decreasingTime;
-            // TODO: change timeScale exponentially
-            rewindTimeScale += Time.deltaTime;           // should increase by 1 every second?
-            Time.timeScale = Mathf.Pow(rewindTimeScale, 2);
+            rewindTimeScale += Time.deltaTime;         // increases with time
+            rewindTimeScale = Mathf.Clamp(rewindTimeScale, 1f, 20f);
+            Time.timeScale = rewindTimeScale;
             if (decreasingTime < 0)
             {
                 StopRewind();
+                rewindTimeScale = timeScale;
             }
         }
         timerUI.UpdateTimerText(roundedTime);
-        if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime)
+        if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime && !isSendingCoroutine)
         {
+            isSendingCoroutine = true;
             StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
             //StartRewind();
         }
@@ -67,6 +71,7 @@ public class TimeController : MonoBehaviour
 
     public void StartRewind()
     {
+        isSendingCoroutine = false;
         isRewinding = true;
         decreasingTime = timeSinceLastLoop;
         timerUI.toggleRewindIcon(true);

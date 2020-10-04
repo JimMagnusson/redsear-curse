@@ -7,7 +7,7 @@ public class PlayerHazardHandler : MonoBehaviour
     [SerializeField] float combustionAnimTime = 1f;
     private Animator animator;
     private TimeController timeController;
-    private bool isHandlingHazard = false;
+     //private bool isHandlingHazard = false;
     private PlayerState playerState;
     private PlayerMovement playerMovement;
 
@@ -20,9 +20,11 @@ public class PlayerHazardHandler : MonoBehaviour
     }
     public IEnumerator HandleHazard(Hazard hazard)
     {
-        if(!isHandlingHazard)
-        {
-            isHandlingHazard = true;
+        //if(!isHandlingHazard)
+        //{
+            Debug.Log("HandlingHazard");
+            //isHandlingHazard = true;
+            playerState = GetComponent<Player>().GetPlayerState();
             playerMovement.SetCanMove(false);
             switch (hazard)
             {
@@ -36,12 +38,13 @@ public class PlayerHazardHandler : MonoBehaviour
                     }
                     else
                     {
-                        // Play small flames anim
+                        animator.SetTrigger("DrownedCombustion");
+                        Debug.Log("player no get combustion");
                         playerMovement.SetCanMove(true);
                     }
                     break;
             }
-            isHandlingHazard = false;
-        }
+            //isHandlingHazard = false;
+        //}
     }
 }

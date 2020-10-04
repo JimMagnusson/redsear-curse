@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private PlayerState currentState = PlayerState.normal;
+    [SerializeField] PlayerState currentState = PlayerState.normal;
+    private Animator animator;
+
+    private void Start()
+    {
+        animator = GetComponentInChildren<Animator>();
+    }
 
     public PlayerState GetPlayerState()
     {
@@ -14,5 +20,24 @@ public class Player : MonoBehaviour
     public void SetPlayerState(PlayerState state)
     {
         currentState = state;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Pond"))
+        {
+            currentState = PlayerState.wet;
+            animator.SetBool("PlayerSubmerged", true);
+
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Pond"))
+        {
+            currentState = PlayerState.normal;
+            animator.SetBool("PlayerSubmerged", false);
+        }
     }
 }
