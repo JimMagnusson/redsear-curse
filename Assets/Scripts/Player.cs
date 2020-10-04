@@ -12,6 +12,15 @@ public class Player : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
+    private void Update()
+    {
+        if(currentState == PlayerState.warm)
+        {
+            Debug.Log("I'm warm");
+            // TODO: write to player in canvas
+        }
+    }
+
     public PlayerState GetPlayerState()
     {
         return currentState;
@@ -30,6 +39,10 @@ public class Player : MonoBehaviour
             animator.SetBool("PlayerSubmerged", true);
 
         }
+        else if (collision.gameObject.CompareTag("Campfire"))
+        {
+            currentState = PlayerState.warm;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -38,6 +51,10 @@ public class Player : MonoBehaviour
         {
             currentState = PlayerState.normal;
             animator.SetBool("PlayerSubmerged", false);
+        }
+        else if(collision.gameObject.CompareTag("Campfire"))
+        {
+            currentState = PlayerState.normal;
         }
     }
 }

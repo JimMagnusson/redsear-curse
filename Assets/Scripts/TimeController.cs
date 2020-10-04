@@ -6,7 +6,8 @@ public class TimeController : MonoBehaviour
 {
     [SerializeField] float timeScale = 1f;
     [SerializeField] float rewindTimeScale = 2f;
-    [SerializeField] [Tooltip("In seconds")] float rewindTriggerTime = 60;          // TODO: write one for every hazard
+    [SerializeField] [Tooltip("In seconds")] float combustionTriggerTime = 10f;
+    [SerializeField] [Tooltip("In seconds")] float freezeTriggerTime = 20f;
     PlayerHazardHandler playerHazardHandler;
     float timeSinceLastLoop = 0f;
     float decreasingTime = 0f;
@@ -48,13 +49,19 @@ public class TimeController : MonoBehaviour
             }
         }
         timerUI.UpdateTimerText(roundedTime);
-        if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime && !isSendingCoroutine)
-        {
-            isSendingCoroutine = true;
-            StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
-        }
+        HandleHazardTrigger(combustionTriggerTime, Hazard.combustion);
+        HandleHazardTrigger(freezeTriggerTime, Hazard.freeze);
 
         HandleDebugMode();
+    }
+
+    private void HandleHazardTrigger(float triggerTime, Hazard hazard)
+    {
+        if (Mathf.Abs(timeSinceLastLoop - triggerTime) <= Time.deltaTime && !isSendingCoroutine)
+        {
+            isSendingCoroutine = true;
+            StartCoroutine(playerHazardHandler.HandleHazard(hazard));
+        }
     }
 
     private void HandleDebugMode()
@@ -70,7 +77,6 @@ public class TimeController : MonoBehaviour
 
     public void StartRewind()
     {
-        isSendingCoroutine = false;
         isRewinding = true;
         decreasingTime = timeSinceLastLoop;
         ToggleRewindUI(true);
@@ -105,4 +111,16 @@ public class TimeController : MonoBehaviour
         timerUI.toggleRewindEffect(isActive);
     }
 
+    public void SetIsSendingCoroutine(bool isSendingCoroutine)
+    {
+        this.isSendingCoroutine = isSendingCoroutine;
+    }
+    public float GetDecreasingTime()
+    {
+        return decreasingTime;
+    }
+    public float GetTimeSinceLastLoop()
+    {
+        return timeSinceLastLoop;
+    }
 }
