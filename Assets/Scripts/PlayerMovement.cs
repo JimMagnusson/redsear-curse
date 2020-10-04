@@ -6,9 +6,11 @@ public class PlayerMovement : MonoBehaviour
 {
     Rigidbody2D rigidBody;
     bool facingLeft = true;
+    bool canMove = true;
     Vector3 lastPosition;
     Animator animator;
     TimeController timeController;
+
 
     [SerializeField] GameObject body;
     [SerializeField] float walkingSpeed = 5f;
@@ -32,12 +34,15 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleInput()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        Vector2 movementVector = new Vector2(horizontalInput, verticalInput);
-        movementVector.Normalize();
-        Vector2 velocity = movementVector * walkingSpeed;
-        rigidBody.velocity = velocity;
+        if (canMove)
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            float verticalInput = Input.GetAxisRaw("Vertical");
+            Vector2 movementVector = new Vector2(horizontalInput, verticalInput);
+            movementVector.Normalize();
+            Vector2 velocity = movementVector * walkingSpeed;
+            rigidBody.velocity = velocity;
+        }
     }
 
     void CheckPositionChange()
@@ -79,5 +84,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 bodyScale = body.transform.localScale;
         body.transform.localScale = new Vector3(-bodyScale.x, bodyScale.y, bodyScale.z);
+    }
+
+    public void SetCanMove(bool canMove)
+    {
+        this.canMove = canMove;
+        rigidBody.velocity = Vector3.zero;      // Reset velocity
     }
 }

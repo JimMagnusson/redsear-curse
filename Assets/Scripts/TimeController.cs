@@ -15,17 +15,19 @@ public class TimeController : MonoBehaviour
     bool isRewinding = false;
     TimerUI timerUI;
     TimeBody[] timeBodies;
+    PlayerMovement playerMovement;
 
     void Start()
     {
         playerHazardHandler = FindObjectOfType<PlayerHazardHandler>();
         timerUI = FindObjectOfType<TimerUI>();
         timeBodies = FindObjectsOfType<TimeBody>();
+        playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
     void Update()
     {
-        if (!isRewinding)                                           // TODO: bug, clock not counting after rewind. Might be due to no anim
+        if (!isRewinding)
         {
             timeSinceLastLoop += Time.deltaTime;
             roundedTime = (int)timeSinceLastLoop;
@@ -35,16 +37,18 @@ public class TimeController : MonoBehaviour
             decreasingTime -= Time.deltaTime;
             roundedTime = (int)decreasingTime;
             // TODO: change timeScale exponentially
+            rewindTimeScale += Time.deltaTime;           // should increase by 1 every second?
+            Time.timeScale = Mathf.Pow(rewindTimeScale, 2);
+            if (decreasingTime < 0)
+            {
+                StopRewind();
+            }
         }
         timerUI.UpdateTimerText(roundedTime);
         if (Mathf.Abs(timeSinceLastLoop - rewindTriggerTime ) <= Time.deltaTime)
         {
             StartCoroutine(playerHazardHandler.HandleHazard(Hazard.combustion));
             //StartRewind();
-        }
-        else if(decreasingTime < 0)
-        {
-            StopRewind();
         }
 
         HandleDebugMode();
@@ -65,12 +69,14 @@ public class TimeController : MonoBehaviour
     {
         isRewinding = true;
         decreasingTime = timeSinceLastLoop;
-        Time.timeScale = rewindTimeScale;  
+        timerUI.toggleRewindIcon(true);
+
+        //Time.timeScale = rewindTimeScale
+
         foreach (TimeBody timeBody in timeBodies)
         {
             timeBody.StartRewindTimeBody();
         }
-        timerUI.toggleRewindIcon(true);
     }
 
     public void StopRewind()
@@ -83,6 +89,7 @@ public class TimeController : MonoBehaviour
         }
         timeSinceLastLoop = 0f;
         timerUI.toggleRewindIcon(false);
+        playerMovement.SetCanMove(true);
     }
 
     public bool IsRewinding()
