@@ -6,8 +6,11 @@ public class TimeController : MonoBehaviour
 {
     [SerializeField] float timeScale = 1f;
     [SerializeField] float rewindTimeScale = 2f;
-    [SerializeField] [Tooltip("In seconds")] float combustionTriggerTime = 10f;
-    [SerializeField] [Tooltip("In seconds")] float freezeTriggerTime = 20f;
+    [SerializeField] [Tooltip("In seconds")] float combustionTriggerTime = 20f;
+    [SerializeField] [Tooltip("In seconds")] float freezeTriggerTime = 40f;
+    [SerializeField] [Tooltip("In seconds")] float secondCombustionTriggerTime = 55f;
+    [SerializeField] [Tooltip("In seconds")] float secondFreezeTriggerTime = 75f;
+    [SerializeField] [Tooltip("In seconds")] float thirdCombustionTriggerTime = 100f;
     PlayerHazardHandler playerHazardHandler;
     float timeSinceLastLoop = 0f;
     float decreasingTime = 0f;
@@ -19,6 +22,7 @@ public class TimeController : MonoBehaviour
     PlayerMovement playerMovement;
 
     bool isSendingCoroutine = false;
+    bool isHazardsActive = true;
 
     void Start()
     {
@@ -49,8 +53,14 @@ public class TimeController : MonoBehaviour
             }
         }
         timerUI.UpdateTimerText(roundedTime);
-        HandleHazardTrigger(combustionTriggerTime, Hazard.combustion);
-        HandleHazardTrigger(freezeTriggerTime, Hazard.freeze);
+        if(isHazardsActive)
+        {
+            HandleHazardTrigger(combustionTriggerTime, Hazard.combustion);
+            HandleHazardTrigger(freezeTriggerTime, Hazard.freeze);
+            HandleHazardTrigger(secondCombustionTriggerTime, Hazard.combustion);
+            HandleHazardTrigger(secondFreezeTriggerTime, Hazard.freeze);
+            HandleHazardTrigger(thirdCombustionTriggerTime, Hazard.combustion);
+        }
 
         HandleDebugMode();
     }
@@ -122,5 +132,9 @@ public class TimeController : MonoBehaviour
     public float GetTimeSinceLastLoop()
     {
         return timeSinceLastLoop;
+    }
+    public void SetHazardsActive(bool isActive)
+    {
+        isHazardsActive = isActive;
     }
 }

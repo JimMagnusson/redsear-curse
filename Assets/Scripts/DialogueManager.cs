@@ -11,17 +11,18 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] GameObject dialogueBox;
     [SerializeField] GameObject witch;
     private string npcName;
+    private WitchMovement witchMovement;
 
     private void Start()
     {
         sentences = new Queue<string>();
+        witchMovement = witch.GetComponent<WitchMovement>();
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
         dialogueBox.SetActive(true);
         npcName = dialogue.name;
-        Debug.Log("Starting dialogue with " + npcName);
         nameText.text = dialogue.name;
 
         sentences.Clear();
@@ -32,6 +33,11 @@ public class DialogueManager : MonoBehaviour
         }
 
         DisplayNextSentence();
+
+        if(npcName == "The Witch" && witchMovement.IsAtTarget())
+        {
+            FindObjectOfType<TimeController>().SetHazardsActive(false);
+        }
     }
 
     public void DisplayNextSentence()
@@ -48,7 +54,6 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         dialogueBox.SetActive(false);
-        Debug.Log("End of conversation");
         WitchMovement witchMovement = witch.GetComponent<WitchMovement>();
         if (npcName == "The Witch")
         {

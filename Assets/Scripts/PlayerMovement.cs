@@ -36,19 +36,30 @@ public class PlayerMovement : MonoBehaviour
     {
         if (canMove)
         {
+            bool isRewinding = timeController.IsRewinding();
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             float verticalInput = Input.GetAxisRaw("Vertical");
             Vector2 movementVector = new Vector2(horizontalInput, verticalInput);
             movementVector.Normalize();
             Vector2 velocity = movementVector * walkingSpeed;
             rigidBody.velocity = velocity;
+            if(!isRewinding)
+            {
+                if (Mathf.Abs(horizontalInput) > 0f || Mathf.Abs(verticalInput) > 0f)
+                {
+                    animator.SetBool("PlayerRunning", true);
+                }
+                else
+                {
+                    animator.SetBool("PlayerRunning", false);
+                }
+            }
         }
     }
 
     void CheckPositionChange()
     {
         float changeInXPos = lastPosition.x - transform.position.x;
-        float changeInYPos = lastPosition.y - transform.position.y;
         bool isRewinding = timeController.IsRewinding();
 
         if (Mathf.Abs(changeInXPos) >= Mathf.Epsilon) 
@@ -70,12 +81,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if(Mathf.Abs(changeInXPos) >= Mathf.Epsilon || Mathf.Abs(changeInYPos) >= Mathf.Epsilon)
+        if(lastPosition != transform.position && isRewinding)
         {
             animator.SetBool("PlayerRunning", true);
         }
-        else
+        else if(isRewinding)
         {
+            Debug.Log("Setting running anim false");
             animator.SetBool("PlayerRunning", false);
         }
     }
@@ -90,5 +102,6 @@ public class PlayerMovement : MonoBehaviour
     {
         this.canMove = canMove;
         rigidBody.velocity = Vector3.zero;      // Reset velocity
+        animator.SetBool("PlayerRunning", false);
     }
 }

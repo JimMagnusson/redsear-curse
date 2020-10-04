@@ -28,15 +28,12 @@ public class WitchMovement : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, target, step);
             animator.SetBool("WitchWalking", true);
         }
-        else
-        {
-            animator.SetBool("WitchWalking", false);
-        }
         Vector2 myPos = new Vector2(transform.position.x, transform.position.y);
         if(target == myPos)
         {
             if(!isAtTarget)
             {
+                animator.SetBool("WitchWalking", false);
                 isAtTarget = true;
             }
         }
