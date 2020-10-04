@@ -88,7 +88,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Witch Walking
+    m_ConditionEvent: WitchWalking
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3225180655342630264}
@@ -113,7 +113,7 @@ AnimatorController:
   m_Name: Witch
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Witch Walking
+  - m_Name: WitchWalking
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -141,7 +141,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: Witch Walking
+    m_ConditionEvent: WitchWalking
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -9197253190633705885}
